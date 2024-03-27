@@ -17,8 +17,6 @@ users = sqlalchemy.Table(
     sqlalchemy.Column("lastname", sqlalchemy.String(32)),
     # sqlalchemy.Column("date_of_birth", sqlalchemy.String(32)),
     sqlalchemy.Column("date_of_birth", sqlalchemy.Date),
-    # sqlalchemy.Column("address", sqlalchemy.String(128)),
-    # sqlalchemy.Column("phone", sqlalchemy.String(128)),
     sqlalchemy.Column("email", sqlalchemy.String(80)),
     sqlalchemy.Column("password", sqlalchemy.String(32)),
 )
