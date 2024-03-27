@@ -83,15 +83,11 @@ async def create_fake_data(user_count: int, product_count: int, order_count: int
     for i in range(user_count):
         query = users.insert().values(
             username=f"User_{i + 1}", lastname=f"Last_name_{i + 1}",
-            # date_of_birth=f'{datetime.strptime("2024-03-10", "%Y-%m-%d").date() + timedelta(days=i ** 2)}',
             date_of_birth=datetime.strptime("2024-03-10", "%Y-%m-%d").date() + timedelta(days=i ** 2),
             email=f"user{i + 1}@gmail.com", password=f"pass{i + 1}00000")
-
         await database.execute(query)
     logger.info(f'{user_count} fake users create - success')
 
-    # return {"list users created": f"{users.select()}"}
-    # return users.select()
     for i in range(product_count):
         query = products.insert().values(
             name=f'nameProd{i + 1}',
@@ -105,7 +101,6 @@ async def create_fake_data(user_count: int, product_count: int, order_count: int
         query = orders.insert().values(
             user_id=randint(1, user_count),
             product_id=randint(1, product_count),
-            # date_of_order=datetime.now(timezone.utc),
             date_of_order=datetime.strptime("2024-03-10", "%Y-%m-%d").date() + timedelta(days=i ** 2),
             order_status=f'status_{i + 1}', )
         await database.execute(query)
@@ -267,9 +262,6 @@ async def update_order(ord_id: int, new_ord: Order):
     """ Update the order in database"""
 
     query = orders.update().where(orders.c.order_id == ord_id).values(**new_ord.model_dump())
-    # query = users.update().where(users.c.user_id == usr_id).values(
-    #     username=new_user.username, email=new_user.email,
-    #     password=new_user.password.get_secret_value())
     await database.execute(query)
     logger.info(' update order - success')
     return {**new_ord.model_dump(), "order_id": ord_id}
@@ -283,48 +275,6 @@ async def delete_order(ord_id: int):
     logger.info(' delete order - success')
     return {'message': f'order id={ord_id}: deleted'}
 
-
-#
-# create##########################################################
-# @app.post("/users/", response_model=UserWithID)  # Создание пользователя в БД, create
-# async def create_user(user: User):
-#     """/////////////////// Create a new user in the database"""
-#
-#     query = users.insert().values(
-#         username=user.username,
-#         lastname=user.lastname,
-#         date_of_birth=user.date_of_birth,
-#         email=user.email,
-#         password=user.password)
-#     # password=user.password.get_secret_value())
-#     last_record_id = await database.execute(query)
-#     print(user.model_dump())
-#     return {**user.model_dump(), "user_id": last_record_id}
-
-
-#
-# # @app.get("/items/")
-# # async def read_item(skip: int = 0, limit: int = 10):
-# #     return {"skip": skip, "limit": limit}
-#
-
-#
-# @app.put("/users/{user_id}", response_model=UserWithID)  # Обновление пользователя в БД, update
-# async def update_user(usr_id: int, new_user: User):
-#     # query = users.update().where(users.c.user_id == usr_id).values(**new_user.model_dump())
-#     query = users.update().where(users.c.user_id == usr_id).values(
-#         username=new_user.username, email=new_user.email,
-#         password=new_user.password.get_secret_value())
-#     await database.execute(query)
-#     return {**new_user.model_dump(), "user_id": usr_id}  # dict() заменили на model_dump()
-#
-#
-# @app.delete("/users/{user_id}")  # Удаление пользователя из БД, delete
-# async def delete_user(usr_id: int):
-#     query = users.delete().where(users.c.user_id == usr_id)
-#     await database.execute(query)
-#     return {'message': 'User deleted'}
-#
 
 if __name__ == "__main__":
     uvicorn.run("hw6_task6_main:app", host="127.0.0.1", port=8000, reload=True)
